@@ -1,0 +1,18 @@
+# Generated builds and Python cache
+build/
+dist/
+*.spec
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Keep encrypted or personal text files OUT of the public source repository.
+*.txt
+!requirements.txt
+
+# Editor / OS clutter
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

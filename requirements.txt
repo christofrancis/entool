@@ -1,0 +1,4 @@
+# Dependencies needed only to run the Python source or build an executable.
+# End users of the compiled executables do not need Python or these packages.
+cryptography>=46,<51
+pyinstaller>=6.20,<7
