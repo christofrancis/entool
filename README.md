@@ -7,11 +7,9 @@
               by christofrancis
 ```
 
-# EnTool — Native Go edition
+# EnTool
 
-**EnTool** is a free, open-source, entirely offline command-line tool for encrypting a short text secret into a `.txt` file and decrypting it with a passphrase.
-
-This is a **complete rewrite in Go**, not Python or PyInstaller. It produces native executables without shipping a Python interpreter or unpacking one at startup.
+**EnTool** is an open-source, offline command-line tool for encrypting short secrets into `.txt` files and decrypting them using a passphrase. It is written in **Go** and runs as a native executable without installing Go or Python.
 
 ## Downloads
 
@@ -22,13 +20,17 @@ This is a **complete rewrite in Go**, not Python or PyInstaller. It produces nat
 | macOS Intel x64 | [EnToolMacOS.tar.gz](downloads/EnToolMacOS.tar.gz) |
 | macOS Apple Silicon arm64 | [EnToolMacOSAppleSilicon.tar.gz](downloads/EnToolMacOSAppleSilicon.tar.gz) |
 
-Click a download above, then **Download raw file** on GitHub. Downloaded files are built from the Go source on GitHub Actions, with automatic startup tests. SHA-256 checksums are listed in [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
+Click your system's file in the table, then select **Download raw file** on GitHub. The programs are built from this repository by [GitHub Actions](.github/workflows/build.yml). SHA-256 file checksums are in [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
 
-**Windows:** put `EnToolWindows.exe` in a writable folder, open it, and use its terminal menu.
+**Windows:** place `EnToolWindows.exe` in a writable folder and open it. Follow the terminal menu.
 
-**Linux:** extract `EnToolLinux.tar.gz` to a writable folder, then `chmod +x EnToolLinux && ./EnToolLinux`.
+**Linux:** extract `EnToolLinux.tar.gz`, then run `chmod +x EnToolLinux && ./EnToolLinux` in that folder.
 
-**macOS:** extract the appropriate `.tar.gz` archive to a writable folder, then `chmod +x EnToolMacOS && ./EnToolMacOS` (or `EnToolMacOSAppleSilicon` on ARM64). The macOS builds are **not Apple-notarized** and may show a Gatekeeper warning.
+**macOS Intel:** extract `EnToolMacOS.tar.gz`, then run `chmod +x EnToolMacOS && ./EnToolMacOS`.
+
+**macOS Apple Silicon:** extract `EnToolMacOSAppleSilicon.tar.gz`, then run `chmod +x EnToolMacOSAppleSilicon && ./EnToolMacOSAppleSilicon`.
+
+Keep each executable in a **writable folder**, because it creates and reads encrypted `.txt` files alongside itself. macOS binaries are not Apple-notarized and may trigger a Gatekeeper warning.
 
 > **Security notice:** These executables are not digitally signed by a trusted publisher and have not undergone an independent security audit. **Antivirus/SmartScreen may still issue warnings**; writing software in Go cannot guarantee zero alerts. Do not disable protection or add antivirus exclusions. Report suspected false positives to your antivirus vendor for review. A successful build or SHA-256 verification is not a malware clearance.
 
@@ -40,7 +42,7 @@ Click a download above, then **Download raw file** on GitHub. Downloaded files a
 4. The recipient runs EnTool and chooses **2** to decrypt the file with the same passphrase.
 5. Choose **0** to exit.
 
-The program reads and creates `.txt` files **next to the executable**. It will not overwrite existing files and rejects paths outside that folder. Secret and passphrase input is hidden when running in a real terminal. It does not need an internet connection.
+The program reads and creates `.txt` files **next to the executable**, never overwrites existing files, and rejects paths outside that folder. Secrets and passphrases are entered without echoing them in an interactive terminal. Internet access is not required.
 
 ## Compatibility and encryption
 
@@ -53,7 +55,7 @@ The program reads and creates `.txt` files **next to the executable**. It will n
 
 ## Build from source
 
-Requires Go 1.23 or later:
+To build from source, install Go 1.23 or later:
 
 ```sh
 go mod download

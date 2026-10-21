@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-      - go-rewrite-validation
     paths:
       - '**.go'
       - go.mod
+      - go.sum
       - .github/workflows/build.yml
       - .gitattributes
   workflow_dispatch:
