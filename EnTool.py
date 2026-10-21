@@ -26,6 +26,13 @@ APP_DIR = Path(
     sys.executable if getattr(sys, "frozen", False) else __file__
 ).resolve().parent
 
+BANNER = r""" _____       _____           _
+| ____|_ __ |_   _|__   ___ | |
+|  _| | '_ \  | |/ _ \ / _ \| |
+| |___| | | | | | (_) | (_) | |
+|_____|_| |_| |_|\___/ \___/|_|
+              by christofrancis"""
+
 # Keep ET1 so files created by older EnTool versions can still be decrypted.
 FORMAT_VERSION = "ET1"
 FILLER_ALPHABET = string.ascii_letters + string.digits + "-_"
@@ -227,6 +234,7 @@ def decrypt_file() -> None:
 
 
 def main() -> None:
+    print(BANNER)
     while True:
         print("\n========= EnTool =========")
         print("1. Encrypt a secret into a new text file")

@@ -104,7 +104,7 @@ The same encrypted text file can be decrypted on Windows, Linux, or macOS. Diffe
 +--------------------------------------------------------------------+
 ```
 
-The implementation is in [`EnTool.py`](EnTool.py). Developers may install dependencies from `requirements.txt` and run the included tests:
+The implementation is in [`EnTool.py`](EnTool.py). The README logo and `by christofrancis` line are displayed once at startup. For platform-specific executable builds, see [`BUILDING.md`](BUILDING.md). Developers may install dependencies from `requirements.txt` and run the included tests:
 
 ```bash
 python -m pip install -r requirements.txt
