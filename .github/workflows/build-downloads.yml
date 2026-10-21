@@ -20,9 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2022
-            executable: EnToolWindows
-            artifact: windows
           - os: ubuntu-22.04
             executable: EnToolLinux
             artifact: linux
@@ -39,52 +36,9 @@ jobs:
       - name: Test source
         run: python -m unittest discover -s tests -v
 
-      # Windows: avoid PyInstaller onefile's executable extraction into %TEMP%.
-      - name: Build Windows one-folder bundle
-        if: runner.os == 'Windows'
-        run: python -m PyInstaller --noconfirm --clean --onedir --console --noupx --name EnToolWindows EnTool.py
-      - name: Test Windows executable and create ZIP
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $exe = 'dist/EnToolWindows/EnToolWindows.exe'
-          if (!(Test-Path $exe) -or !(Test-Path 'dist/EnToolWindows/_internal')) {
-            throw 'Incomplete PyInstaller onedir bundle'
-          }
-          $output = "0`n" | & $exe | Out-String
-          if ($LASTEXITCODE -ne 0 -or !$output.Contains('by christofrancis') -or !$output.Contains('Goodbye!')) {
-            throw 'Windows executable smoke test failed'
-          }
-          New-Item -ItemType Directory -Force staging | Out-Null
-          Compress-Archive -Path 'dist/EnToolWindows' -DestinationPath 'staging/EnToolWindows.zip' -CompressionLevel Optimal -Force
-          Expand-Archive -Path 'staging/EnToolWindows.zip' -DestinationPath 'zip-check' -Force
-          if (!(Test-Path 'zip-check/EnToolWindows/EnToolWindows.exe') -or !(Test-Path 'zip-check/EnToolWindows/_internal')) {
-            throw 'Windows archive validation failed'
-          }
-      - name: Scan Windows bundle with Defender when available
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $status = Get-MpComputerStatus -ErrorAction SilentlyContinue
-          if ($null -eq $status -or -not $status.AntivirusEnabled -or -not $status.RealTimeProtectionEnabled) {
-            Write-Warning 'Microsoft Defender is not active on this hosted runner: no antivirus clean result can be claimed.'
-          } else {
-            $path = (Resolve-Path 'dist/EnToolWindows').Path
-            Start-MpScan -ScanType CustomScan -ScanPath $path -ErrorAction Stop
-            $detections = @(Get-MpThreatDetection -ErrorAction SilentlyContinue | Where-Object { [string]::Join(';', @($_.Resources)) -match 'EnToolWindows' })
-            if ($detections.Count -gt 0 -or !(Test-Path 'dist/EnToolWindows/EnToolWindows.exe')) {
-              throw 'Defender detected or removed the EnTool Windows bundle; refusing to publish'
-            }
-            Write-Host 'Microsoft Defender scan completed on hosted runner; user devices may produce different results.'
-          }
-
       - name: Build Linux/macOS single-file executable
-        if: runner.os != 'Windows'
         run: python -m PyInstaller --noconfirm --clean --onefile --console --name ${{ matrix.executable }} EnTool.py
       - name: Test and package Linux/macOS executable
-        if: runner.os != 'Windows'
         shell: bash
         run: |
           set -euo pipefail
@@ -120,23 +74,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s downloads/EnToolWindows.zip
           test -s downloads/EnToolLinux.tar.gz
           test -s downloads/EnToolMacOS.tar.gz
-          unzip -t downloads/EnToolWindows.zip
-          unzip -Z1 downloads/EnToolWindows.zip | grep -Fx 'EnToolWindows/EnToolWindows.exe'
-          unzip -Z1 downloads/EnToolWindows.zip | grep -q '^EnToolWindows/_internal/'
           tar -tzf downloads/EnToolLinux.tar.gz | grep -q 'EnToolLinux'
           tar -tzf downloads/EnToolMacOS.tar.gz | grep -q 'EnToolMacOS'
-          (cd downloads && sha256sum EnToolWindows.zip EnToolLinux.tar.gz EnToolMacOS.tar.gz > SHA256SUMS)
+          (cd downloads && sha256sum EnToolLinux.tar.gz EnToolMacOS.tar.gz > SHA256SUMS)
           (cd downloads && sha256sum -c SHA256SUMS)
       - name: Commit packages to main
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add downloads/EnToolWindows.zip downloads/EnToolLinux.tar.gz downloads/EnToolMacOS.tar.gz downloads/SHA256SUMS
+          git add downloads/EnToolLinux.tar.gz downloads/EnToolMacOS.tar.gz downloads/SHA256SUMS
           if ! git diff --cached --quiet; then
-            git commit -m 'Publish Windows folder bundle and verified package checksums'
+            git commit -m 'Publish Linux and macOS packages with checksums'
             git push origin HEAD:main
           fi

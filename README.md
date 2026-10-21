@@ -13,7 +13,7 @@
 
 **EnTool** is a free, open-source, offline command-line tool for encrypting short text secrets into `.txt` files and decrypting them with a shared passphrase.
 
-Prebuilt packages are included **directly in this repository**. You do not need Python or an internet connection to run them. The Windows package is a ZIP folder bundle rather than a self-extracting single-file EXE.
+Prebuilt Linux and macOS packages are included **directly in this repository**. On Windows, **prebuilt executable downloads are temporarily suspended** after Microsoft Defender detections. Use the auditable Python source until a new Windows build has been independently checked.
 
 ```text
 +--------------------------------------------------------------------+
@@ -23,7 +23,7 @@ Prebuilt packages are included **directly in this repository**. You do not need 
 
 | Operating system | Download |
 |---|---|
-| Windows (x64) | [EnToolWindows.zip](downloads/EnToolWindows.zip) |
+| Windows (x64) | **Temporarily unavailable** — [run from Python source](#windows) |
 | Linux (x64, glibc) | [EnToolLinux.tar.gz](downloads/EnToolLinux.tar.gz) |
 | macOS (Intel x64) | [EnToolMacOS.tar.gz](downloads/EnToolMacOS.tar.gz) |
 
@@ -35,9 +35,16 @@ Open your platform's file link and use **Download raw file** on GitHub to save i
 +--------------------------------------------------------------------+
 ```
 
-Download `EnToolWindows.zip`, right-click it and choose **Extract All**, then open the extracted `EnToolWindows` folder and launch `EnToolWindows.exe`. **Keep the `_internal` folder together with the EXE**; it contains runtime dependencies. Encrypted `.txt` files will appear next to `EnToolWindows.exe`.
+**Windows downloads paused:** Microsoft Defender has reported detections against earlier EnTool Windows binaries (including `Trojan:Win32/Ulthar.A!ml`). Another serious detection was reported after the folder-bundle release, but its affected file path has not yet been verified. We withdrew the Windows ZIP as a precaution. Do not restore it from quarantine or turn off Microsoft Defender to run it.
 
-This packaging avoids the temporary self-extraction used by PyInstaller `--onefile`. It **does not guarantee** that Microsoft Defender, SmartScreen, or other security software will trust the binary. If Windows blocks it, do **not** turn off protection or add a blind exclusion. Use the Python source version below or submit the detection to [Microsoft Security Intelligence](https://www.microsoft.com/en-us/wdsi/filesubmission) for review.
+To run the reviewed-in-repository source instead, install Python 3.12 from [python.org](https://www.python.org/downloads/windows/), clone or download the repository source, and open PowerShell in its root folder:
+
+```powershell
+py -3.12 -m pip install -r requirements.txt
+py -3.12 EnTool.py
+```
+
+Encrypted `.txt` files are written next to `EnTool.py` when run from source. The Python code has not been independently audited; running from source is not a guarantee of safety. Verify anything you install and keep Microsoft Defender enabled. Windows binary distribution will resume only after further review and testing. Suspected false positives can be submitted to [Microsoft Security Intelligence](https://www.microsoft.com/en-us/wdsi/filesubmission).
 
 ```text
 +--------------------------------------------------------------------+
@@ -77,7 +84,7 @@ The macOS build targets **Intel x64**. It may run on Apple Silicon Macs through 
 
 1. Launch the executable and select `1` to **encrypt** a secret.
 2. Enter a **file name** (such as `message.txt`), the secret text, an encryption passphrase, and the desired output length in characters.
-3. EnTool creates the encrypted `.txt` file next to the executable (inside the extracted `EnToolWindows` folder on Windows).
+3. EnTool creates the encrypted `.txt` file next to the executable (or next to `EnTool.py` when run from source).
 4. Send the `.txt` file to another person **separately from the passphrase**.
 5. The recipient places that `.txt` file next to their EnTool executable, selects `2`, enters the file name and correct passphrase, and sees the decrypted text.
 6. Select `0` to quit.
@@ -98,7 +105,7 @@ The same encrypted text file can be decrypted on Windows, Linux, or macOS. Diffe
 - The decrypted secret is printed on-screen. Be careful with terminal recordings and screen sharing.
 - The program operates offline and does not contact any network service.
 - **EnTool has not undergone an independent security audit.**
-- Windows binaries are not Authenticode-signed. A ZIP archive and SHA-256 checksums do **not** constitute a malware clearance or trusted publisher identity. The checksums in [`downloads/SHA256SUMS`](downloads/SHA256SUMS) are for file integrity verification only.
+- Windows binaries are currently **withdrawn** pending investigation and independent scanning. SHA-256 checksums in [`downloads/SHA256SUMS`](downloads/SHA256SUMS) verify only the integrity of the remaining Linux/macOS packages; checksums do **not** constitute malware clearance.
 - Compatibility: Windows x64; Linux x64 on compatible glibc-based distributions (built on Ubuntu 22.04); macOS Intel x64 (built on macOS 15). Other architectures and older systems are not guaranteed.
 
 ```text
@@ -115,13 +122,9 @@ python -m unittest discover -s tests -v
 python EnTool.py
 ```
 
-If Windows blocks the prebuilt executable, you can run the readable Python source with Python 3.12 installed and its dependencies from `requirements.txt`. Do not bypass Windows security warnings to force the downloaded executable to run.
+Windows prebuilt executable downloads are suspended. Run the Python source as documented in the Windows section. Do not bypass Windows security warnings to force an executable to run.
 
-For integrity verification of the published archives, check their SHA-256 hashes against [`downloads/SHA256SUMS`](downloads/SHA256SUMS). On Windows, PowerShell can calculate the checksum with:
-
-```powershell
-Get-FileHash .\EnToolWindows.zip -Algorithm SHA256
-```
+For integrity verification of the published Linux/macOS archives, check their SHA-256 hashes against [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
 
 ```text
 +--------------------------------------------------------------------+

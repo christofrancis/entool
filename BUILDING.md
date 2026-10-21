@@ -13,18 +13,18 @@ python -m unittest discover -s tests -v
 
 Then run the command for your operating system:
 
-**Windows (x64), in PowerShell:**
+**Windows (x64), for local investigation only (not a verified release):**
 
 ```powershell
 python -m PyInstaller --noconfirm --clean --onedir --console --noupx --name EnToolWindows EnTool.py
-Compress-Archive -Path dist\EnToolWindows -DestinationPath downloads\EnToolWindows.zip -Force
+# Local testing only: do not publish this build until independently checked.
 ```
 
-The ZIP contains `EnToolWindows/EnToolWindows.exe` and its `_internal/` runtime
-folder. Do not move the EXE out of the extracted folder. The old standalone
-`downloads/EnToolWindows.exe` was removed following a Microsoft Defender
-detection (`Trojan:Win32/Ulthar.A!ml`) against that build. The replacement is
-not guaranteed to be recognized as clean by all antivirus products.
+Windows downloadable binaries are suspended after Microsoft Defender detections
+against Windows builds. Even the onedir format cannot be considered safe merely
+because its smoke test passes. Do not publish Windows binaries until independent
+verification, Defender scanning on a normal Windows machine, and appropriate
+publisher signing/reputation checks have been completed.
 
 **Linux (x64):**
 
@@ -47,19 +47,19 @@ Rosetta. A new macOS executable may require local ad-hoc code signing:
 `codesign --force --sign - dist/EnToolMacOS`. This is *not* notarization;
 Gatekeeper may still warn about downloaded unsigned/unnotarized software.
 
-The GitHub Actions workflow rebuilds the packages after changes to the source
-or build configuration, tests each executable, and writes
-`downloads/SHA256SUMS`. Its Windows job attempts a Microsoft Defender scan **only
-when Defender is enabled on the hosted runner**; an unavailable scan is not a
-clean bill of health. For a public Windows release, test the ZIP on a normal
-Windows installation with up-to-date Defender and submit suspected false
-positives through https://www.microsoft.com/en-us/wdsi/filesubmission.
+The GitHub Actions workflow currently builds and publishes Linux and macOS
+packages only, runs startup tests, and writes `downloads/SHA256SUMS`. Windows
+publishing has been deliberately disabled because the hosted Windows runner's
+Defender was inactive during the previous attempt and users reported detections.
+For any future Windows release, scan and inspect the actual build on Windows
+with up-to-date Defender and investigate or submit suspected false positives
+through https://www.microsoft.com/en-us/wdsi/filesubmission.
 
 To strengthen trust in a future Windows release, Authenticode-sign the EXE with
 a trusted code-signing certificate belonging to the publisher; do not store
 private signing keys in this repository. Signing helps establish publisher
 identity but still cannot guarantee that antivirus will accept every release.
 
-Rebuild all three downloads whenever `EnTool.py` changes. Existing encrypted
+Rebuild the published Linux/macOS packages whenever `EnTool.py` changes. Existing encrypted
 `ET1` files remain compatible; adding a startup banner does not change the
 file format.
