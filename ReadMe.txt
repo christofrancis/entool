@@ -28,19 +28,16 @@ Application source:
    - main.go — startup logo, interactive menu and user input.
    - crypto.go — encryption, decryption and ET1 compatibility.
    - files.go — safe file names and local .txt file operations.
-   - entool_test.go — automated tests.
 
 Go configuration:
 
    - go.mod — module definition and dependencies.
    - go.sum — dependency integrity checksums.
-   - .gitattributes — consistent line endings.
-   - .gitignore — excludes local and temporary files.
+   - .gitignore — prevents accidental commits of local secret files.
 
 Release and documentation:
 
-   - downloads/ — Windows, Linux and macOS programs.
-   - .github/workflows/build.yml — automated builds and tests.
+   - downloads/ — four native executables/archives plus SHA256SUMS.
    - ReadMe.txt — project information and instructions.
    - LICENSE — MIT license.
 
@@ -51,7 +48,6 @@ Release and documentation:
    - AES-256-GCM — authenticated encryption (Go standard library).
    - scrypt — passphrase-based key derivation (golang.org/x/crypto).
    - golang.org/x/term — hidden secret and passphrase entry.
-   - GitHub Actions — cross-platform builds and automated checks.
 
 +--------------------------------------------------------------------+
 | HOW THE PROJECT WORKS                                              |
@@ -130,12 +126,13 @@ macOS builds are not Apple-notarized and may show a Gatekeeper warning.
 Requires Go 1.23 or later.
 
 go mod download
-go test ./...
 go build -o EnTool .
 
 On Windows, use go build -o EnTool.exe . in PowerShell.
-The .github/workflows/build.yml file contains the
-platform-specific release build commands.
+The repository includes prebuilt downloads for all supported systems.
+To release an updated executable, rebuild it on the target system
+and manually update the corresponding file in downloads/.
+Automated publishing is not configured.
 
 +--------------------------------------------------------------------+
 | LICENSE                                                            |

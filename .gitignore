@@ -1,17 +1,19 @@
-# Compiled output and local secrets
+# Prevent accidental publication of local encrypted or plaintext secrets.
+*.txt
+!ReadMe.txt
+
+# Local build output.
 build/
 dist/
 *.exe
 *.tar.gz
 *.zip
-*.txt
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/
 
-# Published release downloads are committed intentionally.
+# Keep explicitly published downloads visible to Git.
 !downloads/
 !downloads/*.exe
 !downloads/*.tar.gz
-!downloads/SHA256SUMS
+
+# OS-generated files.
+.DS_Store
+Thumbs.db
