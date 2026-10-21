@@ -9,3 +9,9 @@ dist/
 Thumbs.db
 .idea/
 .vscode/
+
+# Published release downloads are committed intentionally.
+!downloads/
+!downloads/*.exe
+!downloads/*.tar.gz
+!downloads/SHA256SUMS
