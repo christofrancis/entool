@@ -36,7 +36,7 @@ Keep each executable in a **writable folder**, because it creates and reads encr
 
 ## How to use
 
-1. Launch EnTool. The ASCII logo and `by christofrancis` appear above the menu.
+1. Launch EnTool.
 2. Choose **1** to encrypt a secret into a new `.txt` file. Enter a file name, secret, encryption passphrase, confirmation, and desired length (for example 100 characters).
 3. Send the encrypted `.txt` file separately from its passphrase.
 4. The recipient runs EnTool and chooses **2** to decrypt the file with the same passphrase.
