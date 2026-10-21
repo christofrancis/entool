@@ -5,131 +5,64 @@
 | |___| | | | | | (_) | (_) | |
 |_____|_| |_| |_|\___/ \___/|_|
               by christofrancis
-
-+====================================================================+
-|                  ENTOOL - OFFLINE ENCRYPTION TOOL                  |
-+====================================================================+
 ```
 
-**EnTool** is a free, open-source, offline command-line tool for encrypting short text secrets into `.txt` files and decrypting them with a shared passphrase.
+# EnTool — Native Go edition
 
-Prebuilt Linux and macOS packages are included **directly in this repository**. On Windows, **prebuilt executable downloads are temporarily suspended** after Microsoft Defender detections. Use the auditable Python source until a new Windows build has been independently checked.
+**EnTool** is a free, open-source, entirely offline command-line tool for encrypting a short text secret into a `.txt` file and decrypting it with a passphrase.
 
-```text
-+--------------------------------------------------------------------+
-| DOWNLOAD                                                           |
-+--------------------------------------------------------------------+
+This is a **complete rewrite in Go**, not Python or PyInstaller. It produces native executables without shipping a Python interpreter or unpacking one at startup.
+
+## Downloads
+
+| System | Download |
+| --- | --- |
+| Windows x64 | [EnToolWindows.exe](downloads/EnToolWindows.exe) |
+| Linux x64 | [EnToolLinux.tar.gz](downloads/EnToolLinux.tar.gz) |
+| macOS Intel x64 | [EnToolMacOS.tar.gz](downloads/EnToolMacOS.tar.gz) |
+| macOS Apple Silicon arm64 | [EnToolMacOSAppleSilicon.tar.gz](downloads/EnToolMacOSAppleSilicon.tar.gz) |
+
+Click a download above, then **Download raw file** on GitHub. Downloaded files are built from the Go source on GitHub Actions, with automatic startup tests. SHA-256 checksums are listed in [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
+
+**Windows:** put `EnToolWindows.exe` in a writable folder, open it, and use its terminal menu.
+
+**Linux:** extract `EnToolLinux.tar.gz` to a writable folder, then `chmod +x EnToolLinux && ./EnToolLinux`.
+
+**macOS:** extract the appropriate `.tar.gz` archive to a writable folder, then `chmod +x EnToolMacOS && ./EnToolMacOS` (or `EnToolMacOSAppleSilicon` on ARM64). The macOS builds are **not Apple-notarized** and may show a Gatekeeper warning.
+
+> **Security notice:** These executables are not digitally signed by a trusted publisher and have not undergone an independent security audit. **Antivirus/SmartScreen may still issue warnings**; writing software in Go cannot guarantee zero alerts. Do not disable protection or add antivirus exclusions. Report suspected false positives to your antivirus vendor for review. A successful build or SHA-256 verification is not a malware clearance.
+
+## How to use
+
+1. Launch EnTool. The ASCII logo and `by christofrancis` appear above the menu.
+2. Choose **1** to encrypt a secret into a new `.txt` file. Enter a file name, secret, encryption passphrase, confirmation, and desired length (for example 100 characters).
+3. Send the encrypted `.txt` file separately from its passphrase.
+4. The recipient runs EnTool and chooses **2** to decrypt the file with the same passphrase.
+5. Choose **0** to exit.
+
+The program reads and creates `.txt` files **next to the executable**. It will not overwrite existing files and rejects paths outside that folder. Secret and passphrase input is hidden when running in a real terminal. It does not need an internet connection.
+
+## Compatibility and encryption
+
+- **Compatible with existing `ET1` files** created by the original Python EnTool.
+- AES-256-GCM with random 16-byte salt, 12-byte nonce and 16-byte authentication tag.
+- scrypt key derivation (`N=32768`, `r=8`, `p=1`).
+- UTF-8 secrets and an exact user-selected output length (within the 1,000,000-character limit).
+- A longer encrypted file does **not** make a weak passphrase stronger.
+- Keep your key safe: it cannot be recovered if lost. Decrypted text is displayed in the terminal; be mindful of terminal logging and screen sharing.
+
+## Build from source
+
+Requires Go 1.23 or later:
+
+```sh
+go mod download
+go test ./...
+go build -o EnTool .
 ```
 
-| Operating system | Download |
-|---|---|
-| Windows (x64) | **Temporarily unavailable** — [run from Python source](#windows) |
-| Linux (x64, glibc) | [EnToolLinux.tar.gz](downloads/EnToolLinux.tar.gz) |
-| macOS (Intel x64) | [EnToolMacOS.tar.gz](downloads/EnToolMacOS.tar.gz) |
+Windows PowerShell: `go build -o EnTool.exe .` (build on Windows). The same source works on Linux and macOS. See [`.github/workflows/build.yml`](.github/workflows/build.yml) for tested platform release builds.
 
-Open your platform's file link and use **Download raw file** on GitHub to save it.
-
-```text
-+--------------------------------------------------------------------+
-| WINDOWS                                                            |
-+--------------------------------------------------------------------+
-```
-
-**Windows downloads paused:** Microsoft Defender has reported detections against earlier EnTool Windows binaries (including `Trojan:Win32/Ulthar.A!ml`). Another serious detection was reported after the folder-bundle release, but its affected file path has not yet been verified. We withdrew the Windows ZIP as a precaution. Do not restore it from quarantine or turn off Microsoft Defender to run it.
-
-To run the reviewed-in-repository source instead, install Python 3.12 from [python.org](https://www.python.org/downloads/windows/), clone or download the repository source, and open PowerShell in its root folder:
-
-```powershell
-py -3.12 -m pip install -r requirements.txt
-py -3.12 EnTool.py
-```
-
-Encrypted `.txt` files are written next to `EnTool.py` when run from source. The Python code has not been independently audited; running from source is not a guarantee of safety. Verify anything you install and keep Microsoft Defender enabled. Windows binary distribution will resume only after further review and testing. Suspected false positives can be submitted to [Microsoft Security Intelligence](https://www.microsoft.com/en-us/wdsi/filesubmission).
-
-```text
-+--------------------------------------------------------------------+
-| LINUX                                                              |
-+--------------------------------------------------------------------+
-```
-
-Download `EnToolLinux.tar.gz`, extract it in a folder, then run:
-
-```bash
-tar -xzf EnToolLinux.tar.gz
-chmod +x EnToolLinux
-./EnToolLinux
-```
-
-```text
-+--------------------------------------------------------------------+
-| MACOS                                                              |
-+--------------------------------------------------------------------+
-```
-
-Download `EnToolMacOS.tar.gz`, extract it in a folder, then run:
-
-```bash
-tar -xzf EnToolMacOS.tar.gz
-chmod +x EnToolMacOS
-./EnToolMacOS
-```
-
-The macOS build targets **Intel x64**. It may run on Apple Silicon Macs through Rosetta 2. Because the executable is not Apple-signed or notarized, macOS may prevent launching it until the user reviews the security warning and explicitly authorizes it. Do not bypass security warnings for files from untrusted sources.
-
-```text
-+--------------------------------------------------------------------+
-| HOW TO USE                                                         |
-+--------------------------------------------------------------------+
-```
-
-1. Launch the executable and select `1` to **encrypt** a secret.
-2. Enter a **file name** (such as `message.txt`), the secret text, an encryption passphrase, and the desired output length in characters.
-3. EnTool creates the encrypted `.txt` file next to the executable (or next to `EnTool.py` when run from source).
-4. Send the `.txt` file to another person **separately from the passphrase**.
-5. The recipient places that `.txt` file next to their EnTool executable, selects `2`, enters the file name and correct passphrase, and sees the decrypted text.
-6. Select `0` to quit.
-
-The same encrypted text file can be decrypted on Windows, Linux, or macOS. Different files can use different passphrases. Neither the secret text nor the passphrase is stored as plaintext in the encrypted file.
-
-```text
-+--------------------------------------------------------------------+
-| SECURITY AND LIMITATIONS                                           |
-+--------------------------------------------------------------------+
-```
-
-- Uses **AES-256-GCM** authenticated encryption with a key derived from the passphrase using **scrypt**.
-- Encrypted files have an `ET1` format identifier and printable random-looking contents.
-- The output length is customizable, but **longer ciphertext does not make weak passphrases stronger**.
-- Choose a long, unique passphrase. **If you lose it, EnTool cannot recover your secret.**
-- Only regular `.txt` files in the same folder as the executable can be decrypted.
-- The decrypted secret is printed on-screen. Be careful with terminal recordings and screen sharing.
-- The program operates offline and does not contact any network service.
-- **EnTool has not undergone an independent security audit.**
-- Windows binaries are currently **withdrawn** pending investigation and independent scanning. SHA-256 checksums in [`downloads/SHA256SUMS`](downloads/SHA256SUMS) verify only the integrity of the remaining Linux/macOS packages; checksums do **not** constitute malware clearance.
-- Compatibility: Windows x64; Linux x64 on compatible glibc-based distributions (built on Ubuntu 22.04); macOS Intel x64 (built on macOS 15). Other architectures and older systems are not guaranteed.
-
-```text
-+--------------------------------------------------------------------+
-| SOURCE CODE                                                        |
-+--------------------------------------------------------------------+
-```
-
-The implementation is in [`EnTool.py`](EnTool.py). The README logo and `by christofrancis` line are displayed once at startup. For platform-specific executable builds, see [`BUILDING.md`](BUILDING.md). Developers may install dependencies from `requirements.txt` and run the included tests:
-
-```bash
-python -m pip install -r requirements.txt
-python -m unittest discover -s tests -v
-python EnTool.py
-```
-
-Windows prebuilt executable downloads are suspended. Run the Python source as documented in the Windows section. Do not bypass Windows security warnings to force an executable to run.
-
-For integrity verification of the published Linux/macOS archives, check their SHA-256 hashes against [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
-
-```text
-+--------------------------------------------------------------------+
-| LICENSE                                                            |
-+--------------------------------------------------------------------+
-```
+## License
 
 [MIT License](LICENSE) — copyright (c) 2026 christofrancis.

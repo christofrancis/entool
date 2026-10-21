@@ -1,17 +1,10 @@
-# Generated builds and Python cache
+# Compiled output and local secrets
 build/
 dist/
-*.spec
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-
-# Keep encrypted or personal text files OUT of the public source repository.
+*.exe
+*.tar.gz
+*.zip
 *.txt
-!requirements.txt
-
-# Editor / OS clutter
 .DS_Store
 Thumbs.db
 .idea/
