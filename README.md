@@ -53,6 +53,30 @@ The program reads and creates `.txt` files **next to the executable**, never ove
 - A longer encrypted file does **not** make a weak passphrase stronger.
 - Keep your key safe: it cannot be recovered if lost. Decrypted text is displayed in the terminal; be mindful of terminal logging and screen sharing.
 
+## Technology
+
+- **Go 1.23+** — native command-line executables for Windows, Linux, and macOS; no Python or PyInstaller.
+- **AES-256-GCM** (Go standard library) for authenticated encryption, with **scrypt** (`golang.org/x/crypto`) to derive the encryption key from a passphrase.
+- **`golang.org/x/term`** for hidden secret and passphrase input in the terminal.
+- **GitHub Actions** for cross-platform builds and automated tests.
+
+## Project files
+
+| File or directory | Purpose |
+| --- | --- |
+| [`main.go`](main.go) | Application entry point, ASCII logo, menu and user input. |
+| [`crypto.go`](crypto.go) | Encryption/decryption and compatibility with the `ET1` format. |
+| [`files.go`](files.go) | Safe names, reading and writing encrypted `.txt` files. |
+| [`entool_test.go`](entool_test.go) | Automated tests for encryption, file safety and the menu. |
+| [`go.mod`](go.mod) | Go module and required dependencies. |
+| [`go.sum`](go.sum) | Dependency verification checksums. |
+| [`.github/workflows/build.yml`](.github/workflows/build.yml) | Automated builds and tests for the supported systems. |
+| [`downloads/`](downloads/) | Ready-to-run programs and `SHA256SUMS` integrity checksums. |
+| [`.gitignore`](.gitignore) | Keeps temporary files and local secrets out of Git. |
+| [`.gitattributes`](.gitattributes) | Consistent source-file line endings across systems. |
+| [`README.md`](README.md) | Project documentation and usage instructions. |
+| [`LICENSE`](LICENSE) | MIT license. |
+
 ## Build from source
 
 To build from source, install Go 1.23 or later:
