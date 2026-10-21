@@ -6,80 +6,152 @@
 |_____|_| |_| |_|\___/ \___/|_|
               by christofrancis
 ```
+```text
++====================================================================+
+|                  EnTool - OFFLINE ENCRYPTION TOOL                  |
++====================================================================+
+```
+**EnTool** is a small, open-source command-line application for
+encrypting private text into `.txt` files and decrypting them with
+a passphrase. It runs entirely offline on Windows, Linux and macOS.
 
-# EnTool
+```text
++--------------------------------------------------------------------+
+| IMPORTANT NOTICE                                                   |
++--------------------------------------------------------------------+
+```
+Encrypted files can be shared, but the passphrase should be sent
+separately and kept private. A lost passphrase cannot be recovered.
 
-**EnTool** is an open-source, offline command-line tool for encrypting short secrets into `.txt` files and decrypting them using a passphrase. It is written in **Go** and runs as a native executable without installing Go or Python.
+Use a strong, unique passphrase. Keep the encrypted files and
+decrypted output away from public terminals, logs and screen sharing.
 
-## Downloads
+```text
++--------------------------------------------------------------------+
+| PROJECT FILES                                                      |
++--------------------------------------------------------------------+
+```
+**Application source:**
 
-| System | Download |
-| --- | --- |
-| Windows x64 | [EnToolWindows.exe](downloads/EnToolWindows.exe) |
-| Linux x64 | [EnToolLinux.tar.gz](downloads/EnToolLinux.tar.gz) |
-| macOS Intel x64 | [EnToolMacOS.tar.gz](downloads/EnToolMacOS.tar.gz) |
-| macOS Apple Silicon arm64 | [EnToolMacOSAppleSilicon.tar.gz](downloads/EnToolMacOSAppleSilicon.tar.gz) |
+- [`main.go`](main.go) — startup logo, interactive menu and user input.
+- [`crypto.go`](crypto.go) — encryption, decryption and `ET1` compatibility.
+- [`files.go`](files.go) — safe file names and local `.txt` file operations.
+- [`entool_test.go`](entool_test.go) — automated tests.
 
-Click your system's file in the table, then select **Download raw file** on GitHub. The programs are built from this repository by [GitHub Actions](.github/workflows/build.yml). SHA-256 file checksums are in [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
+**Go configuration:**
 
-**Windows:** place `EnToolWindows.exe` in a writable folder and open it. Follow the terminal menu.
+- [`go.mod`](go.mod) — module definition and dependencies.
+- [`go.sum`](go.sum) — dependency integrity checksums.
+- [`.gitattributes`](.gitattributes) — consistent line endings.
+- [`.gitignore`](.gitignore) — excludes local and temporary files.
 
-**Linux:** extract `EnToolLinux.tar.gz`, then run `chmod +x EnToolLinux && ./EnToolLinux` in that folder.
+**Release and documentation:**
 
-**macOS Intel:** extract `EnToolMacOS.tar.gz`, then run `chmod +x EnToolMacOS && ./EnToolMacOS`.
+- [`downloads/`](downloads/) — Windows, Linux and macOS programs.
+- [`.github/workflows/build.yml`](.github/workflows/build.yml) — automated builds and tests.
+- [`README.md`](README.md) — project information and instructions.
+- [`LICENSE`](LICENSE) — MIT license.
 
-**macOS Apple Silicon:** extract `EnToolMacOSAppleSilicon.tar.gz`, then run `chmod +x EnToolMacOSAppleSilicon && ./EnToolMacOSAppleSilicon`.
+```text
++--------------------------------------------------------------------+
+| TECHNOLOGY                                                         |
++--------------------------------------------------------------------+
+```
+- **Go 1.23+** — native command-line programs without a Python runtime.
+- **AES-256-GCM** — authenticated encryption (Go standard library).
+- **scrypt** — passphrase-based key derivation (`golang.org/x/crypto`).
+- **`golang.org/x/term`** — hidden secret and passphrase entry.
+- **GitHub Actions** — cross-platform builds and automated checks.
 
-Keep each executable in a **writable folder**, because it creates and reads encrypted `.txt` files alongside itself. macOS binaries are not Apple-notarized and may trigger a Gatekeeper warning.
+```text
++--------------------------------------------------------------------+
+| HOW THE PROJECT WORKS                                              |
++--------------------------------------------------------------------+
+```
+1. Start EnTool and select **1** to encrypt a secret.
+2. Enter a new `.txt` file name, secret, passphrase and confirmation.
+3. Choose the output file length (up to 1,000,000 characters).
+4. EnTool creates an encrypted `.txt` file next to the executable.
+5. Share the encrypted file separately from its passphrase.
+6. Select **2** to open that file and decrypt it with the passphrase.
+7. Select **0** to exit the program.
 
-> **Security notice:** These executables are not digitally signed by a trusted publisher and have not undergone an independent security audit. **Antivirus/SmartScreen may still issue warnings**; writing software in Go cannot guarantee zero alerts. Do not disable protection or add antivirus exclusions. Report suspected false positives to your antivirus vendor for review. A successful build or SHA-256 verification is not a malware clearance.
+Existing files are never overwritten. Only local `.txt` file names
+are accepted. Secrets and passphrases are hidden during interactive
+entry; decrypted text is displayed on screen.
 
-## How to use
+```text
++--------------------------------------------------------------------+
+| DOWNLOADS                                                          |
++--------------------------------------------------------------------+
+```
+Choose your platform and open the file on GitHub. If its file page
+appears, select **Download raw file**.
 
-1. Launch EnTool.
-2. Choose **1** to encrypt a secret into a new `.txt` file. Enter a file name, secret, encryption passphrase, confirmation, and desired length (for example 100 characters).
-3. Send the encrypted `.txt` file separately from its passphrase.
-4. The recipient runs EnTool and chooses **2** to decrypt the file with the same passphrase.
-5. Choose **0** to exit.
+- **Windows x64:** [EnToolWindows.exe](downloads/EnToolWindows.exe)
+- **Linux x64:** [EnToolLinux.tar.gz](downloads/EnToolLinux.tar.gz)
+- **macOS Intel x64:** [EnToolMacOS.tar.gz](downloads/EnToolMacOS.tar.gz)
+- **macOS Apple Silicon arm64:** [EnToolMacOSAppleSilicon.tar.gz](downloads/EnToolMacOSAppleSilicon.tar.gz)
 
-The program reads and creates `.txt` files **next to the executable**, never overwrites existing files, and rejects paths outside that folder. Secrets and passphrases are entered without echoing them in an interactive terminal. Internet access is not required.
+File integrity hashes: [`downloads/SHA256SUMS`](downloads/SHA256SUMS).
 
-## Compatibility and encryption
+```text
++--------------------------------------------------------------------+
+| PLATFORM INSTRUCTIONS                                              |
++--------------------------------------------------------------------+
+```
+**Windows:** Put `EnToolWindows.exe` in a writable folder, then open it.
 
-- **Compatible with existing `ET1` files** created by the original Python EnTool.
-- AES-256-GCM with random 16-byte salt, 12-byte nonce and 16-byte authentication tag.
-- scrypt key derivation (`N=32768`, `r=8`, `p=1`).
-- UTF-8 secrets and an exact user-selected output length (within the 1,000,000-character limit).
-- A longer encrypted file does **not** make a weak passphrase stronger.
-- Keep your key safe: it cannot be recovered if lost. Decrypted text is displayed in the terminal; be mindful of terminal logging and screen sharing.
+**Linux:** Extract `EnToolLinux.tar.gz` and run:
 
-## Technology
+```sh
+chmod +x EnToolLinux
+./EnToolLinux
+```
 
-- **Go 1.23+** — native command-line executables for Windows, Linux, and macOS; no Python or PyInstaller.
-- **AES-256-GCM** (Go standard library) for authenticated encryption, with **scrypt** (`golang.org/x/crypto`) to derive the encryption key from a passphrase.
-- **`golang.org/x/term`** for hidden secret and passphrase input in the terminal.
-- **GitHub Actions** for cross-platform builds and automated tests.
+**macOS Intel:** Extract `EnToolMacOS.tar.gz` and run:
 
-## Project files
+```sh
+chmod +x EnToolMacOS
+./EnToolMacOS
+```
 
-| File or directory | Purpose |
-| --- | --- |
-| [`main.go`](main.go) | Application entry point, ASCII logo, menu and user input. |
-| [`crypto.go`](crypto.go) | Encryption/decryption and compatibility with the `ET1` format. |
-| [`files.go`](files.go) | Safe names, reading and writing encrypted `.txt` files. |
-| [`entool_test.go`](entool_test.go) | Automated tests for encryption, file safety and the menu. |
-| [`go.mod`](go.mod) | Go module and required dependencies. |
-| [`go.sum`](go.sum) | Dependency verification checksums. |
-| [`.github/workflows/build.yml`](.github/workflows/build.yml) | Automated builds and tests for the supported systems. |
-| [`downloads/`](downloads/) | Ready-to-run programs and `SHA256SUMS` integrity checksums. |
-| [`.gitignore`](.gitignore) | Keeps temporary files and local secrets out of Git. |
-| [`.gitattributes`](.gitattributes) | Consistent source-file line endings across systems. |
-| [`README.md`](README.md) | Project documentation and usage instructions. |
-| [`LICENSE`](LICENSE) | MIT license. |
+**macOS Apple Silicon:** Extract `EnToolMacOSAppleSilicon.tar.gz` and run:
 
-## Build from source
+```sh
+chmod +x EnToolMacOSAppleSilicon
+./EnToolMacOSAppleSilicon
+```
 
-To build from source, install Go 1.23 or later:
+All encrypted `.txt` files are saved next to the executable, so use
+a folder where the program can create files.
+
+```text
++--------------------------------------------------------------------+
+| COMPATIBILITY AND SECURITY                                         |
++--------------------------------------------------------------------+
+```
+- Compatible with existing `ET1` files from the Python version.
+- AES-256-GCM uses a random 16-byte salt and 12-byte nonce, with
+  a 16-byte authentication tag.
+- scrypt parameters: `N=32768`, `r=8`, `p=1`.
+- Text is UTF-8; output length is user-selected.
+- Increasing the encrypted file length does not strengthen a
+  weak passphrase.
+
+**Security notice:** EnTool has not undergone an independent security
+audit. Release binaries are not signed by a trusted publisher;
+antivirus software or SmartScreen may show warnings. Do not disable
+your security protection or add exclusions to force a download.
+SHA-256 checksums confirm integrity, not malware-free status.
+macOS builds are not Apple-notarized and may show a Gatekeeper warning.
+
+```text
++--------------------------------------------------------------------+
+| BUILD FROM SOURCE                                                  |
++--------------------------------------------------------------------+
+```
+Requires **Go 1.23 or later**.
 
 ```sh
 go mod download
@@ -87,8 +159,13 @@ go test ./...
 go build -o EnTool .
 ```
 
-Windows PowerShell: `go build -o EnTool.exe .` (build on Windows). The same source works on Linux and macOS. See [`.github/workflows/build.yml`](.github/workflows/build.yml) for tested platform release builds.
+On Windows, use `go build -o EnTool.exe .` in PowerShell.
+The [build workflow](.github/workflows/build.yml) contains the
+platform-specific release build commands.
 
-## License
-
+```text
++--------------------------------------------------------------------+
+| LICENSE                                                            |
++--------------------------------------------------------------------+
+```
 [MIT License](LICENSE) — copyright (c) 2026 christofrancis.
