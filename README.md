@@ -1,10 +1,25 @@
-# EnTool 🔐
+```text
+   _____           _____                   _
+  | ____|  _ __   |_   _|   ___     ___   | |
+  |  _|   | '_ \    | |    / _ \   / _ \  | |
+  | |___  | | | |   | |   | (_) | | (_) | | |
+  |_____| |_| |_|   |_|    \___/   \___/  |_|
+                            by christofrancis
+
++====================================================================+
+|                  ENTOOL - OFFLINE ENCRYPTION TOOL                  |
++====================================================================+
+```
 
 **EnTool** is a free, open-source, offline command-line tool for encrypting short text secrets into `.txt` files and decrypting them with a shared passphrase.
 
 The three standalone executables are included **directly in this repository**. You do not need Python or an internet connection to run them.
 
-## Download
+```text
++--------------------------------------------------------------------+
+| DOWNLOAD                                                           |
++--------------------------------------------------------------------+
+```
 
 | Operating system | Download |
 |---|---|
@@ -14,11 +29,19 @@ The three standalone executables are included **directly in this repository**. Y
 
 Open your platform's file link and use **Download raw file** on GitHub to save it.
 
-### Windows
+```text
++--------------------------------------------------------------------+
+| WINDOWS                                                            |
++--------------------------------------------------------------------+
+```
 
 Download `EnToolWindows.exe`, place it in a writable folder, and double-click it. Encrypted files will appear in that same folder.
 
-### Linux
+```text
++--------------------------------------------------------------------+
+| LINUX                                                              |
++--------------------------------------------------------------------+
+```
 
 Download `EnToolLinux.tar.gz`, extract it in a folder, then run:
 
@@ -28,7 +51,11 @@ chmod +x EnToolLinux
 ./EnToolLinux
 ```
 
-### macOS
+```text
++--------------------------------------------------------------------+
+| MACOS                                                              |
++--------------------------------------------------------------------+
+```
 
 Download `EnToolMacOS.tar.gz`, extract it in a folder, then run:
 
@@ -40,7 +67,11 @@ chmod +x EnToolMacOS
 
 The macOS build targets **Intel x64**. It may run on Apple Silicon Macs through Rosetta 2. Because the executable is not Apple-signed or notarized, macOS may prevent launching it until the user reviews the security warning and explicitly authorizes it. Do not bypass security warnings for files from untrusted sources.
 
-## How to use
+```text
++--------------------------------------------------------------------+
+| HOW TO USE                                                         |
++--------------------------------------------------------------------+
+```
 
 1. Launch the executable and select `1` to **encrypt** a secret.
 2. Enter a **file name** (such as `message.txt`), the secret text, an encryption passphrase, and the desired output length in characters.
@@ -51,7 +82,11 @@ The macOS build targets **Intel x64**. It may run on Apple Silicon Macs through 
 
 The same encrypted text file can be decrypted on Windows, Linux, or macOS. Different files can use different passphrases. Neither the secret text nor the passphrase is stored as plaintext in the encrypted file.
 
-## Security and limitations
+```text
++--------------------------------------------------------------------+
+| SECURITY AND LIMITATIONS                                           |
++--------------------------------------------------------------------+
+```
 
 - Uses **AES-256-GCM** authenticated encryption with a key derived from the passphrase using **scrypt**.
 - Encrypted files have an `ET1` format identifier and printable random-looking contents.
@@ -63,7 +98,11 @@ The same encrypted text file can be decrypted on Windows, Linux, or macOS. Diffe
 - **EnTool has not undergone an independent security audit.**
 - Compatibility: Windows x64; Linux x64 on compatible glibc-based distributions (built on Ubuntu 22.04); macOS Intel x64 (built on macOS 15). Other architectures and older systems are not guaranteed.
 
-## Source code
+```text
++--------------------------------------------------------------------+
+| SOURCE CODE                                                        |
++--------------------------------------------------------------------+
+```
 
 The implementation is in [`EnTool.py`](EnTool.py). Developers may install dependencies from `requirements.txt` and run the included tests:
 
@@ -72,6 +111,10 @@ python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 ```
 
-## License
+```text
++--------------------------------------------------------------------+
+| LICENSE                                                            |
++--------------------------------------------------------------------+
+```
 
 [MIT License](LICENSE) — copyright (c) 2026 christofrancis.
